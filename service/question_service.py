@@ -11,10 +11,10 @@ async def create_question(question: Question) -> int:
 async def get_question_by_id(question_id : int)->Optional[Question]:
     return await question_repository.get_question_by_id(question_id)
 
-async def answer_question(question_id: int, answer_id: int, user_id)->Optional[int]:
+async def answer_question(question_id: int, answer_id: int, user_id: int)->Optional[int]:
     return await question_repository.answer_question(question_id, answer_id, user_id)
 
-async def update_answer(question_id: int, answer_id : int, user_id)->Optional[int]:
+async def update_answer(question_id: int, answer_id : int, user_id: int)->Optional[int]:
     return await question_repository.update_answer(question_id, answer_id, user_id)
 
 async def delete_question(question_id: int)->Optional[Question]:
