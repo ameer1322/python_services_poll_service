@@ -64,3 +64,6 @@ async def get_users_answers_count(user_id: int)->int:
 async def get_all_questions_answers(user_id: int)->List:
     return await question_service.get_all_questions_answers()
 
+@router.get("/check_user_answered/{user_id}/{question_id}", status_code=status.HTTP_200_OK)
+async def check_user_answered(user_id:int, question_id:int)->bool:
+    return await question_service.check_user_answered(user_id,question_id)

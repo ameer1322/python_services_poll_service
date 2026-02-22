@@ -165,3 +165,17 @@ async def get_all_questions_answers() -> List:
     GROUP BY poll_questions.id, poll_answers.answer_id
     """
     return await database.fetch_all(query)
+
+async def check_user_answered(user_id:int, question_id: int)->bool:
+    query = """
+    SELECT * FROM poll_answers 
+    WHERE user_id = :user_id AND question_id = :question_id
+    """
+    values = {
+        "user_id":user_id,
+        "question_id": question_id
+    }
+    check = await database.fetch_one(query,values= values)
+    if check:
+        return True
+    return False
