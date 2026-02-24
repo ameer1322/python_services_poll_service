@@ -46,3 +46,6 @@ async def get_all_questions_answers()->List:
 
 async def check_user_answered(user_id: int, question_id:int)->bool:
     return await question_repository.check_user_answered(user_id, question_id)
+
+async def get_questions()-> Optional[List[Question]]:
+    return await question_repository.get_questions()

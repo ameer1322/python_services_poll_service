@@ -8,62 +8,49 @@ from model.question_model import Question
 from service import question_service
 
 router = APIRouter(
-    prefix="/poll",
-    tags=["poll"],
+    prefix="/question",
+    tags=["question"],
 )
+
+@router.get("/",status_code = status.HTTP_200_OK)
+async def get_questions():
+    try:
+        return await question_service.get_questions()
+    except Exception as e:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND,detail=str(e))
 
 @router.post("/", status_code=status.HTTP_200_OK)
 async def create_question(question: Question)->int:
-    return await question_service.create_question(question)
+    try:
+        return await question_service.create_question(question)
+    except Exception as e:
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST,detail=str(e))
 
 @router.get("/get_question_by_id/{question_id}", status_code=status.HTTP_200_OK)
 async def get_question_by_id(question_id: int)->Optional[Question]:
-    return await question_service.get_question_by_id(question_id)
+    try:
+        return await question_service.get_question_by_id(question_id)
+    except Exception as e:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND,detail=str(e))
 
-@router.post("/answer_question", status_code=status.HTTP_201_CREATED)
-async def answer_question(question_id: int, answer_id: int, user_id:int)->Optional[int]:
-    return await question_service.answer_question(question_id, answer_id, user_id)
-
-@router.put("/update_answer", status_code=status.HTTP_200_OK)
-async def update_answer(question_id: int, answer_id: int, user_id:int)->Optional[int]:
-    return await question_service.update_answer(question_id, answer_id, user_id)
-
-@router.delete("/delete_question/{question_id}", status_code=status.HTTP_204_NO_CONTENT)
+@router.delete("/delete_question/{question_id}", status_code=status.HTTP_200_OK)
 async def delete_question(question_id: int)->Optional[Question]:
-    return await question_service.delete_question(question_id)
-
-@router.delete("/delete_user_answers", status_code=status.HTTP_204_NO_CONTENT)
-async def delete_user_answers(user_id: int)->Optional[int]:
-    return await question_service.delete_answers_by_user(user_id)
-
-@router.get("/get_answers_by_user", status_code=status.HTTP_200_OK)
-async def get_answers_by_user(user_id: int)->List[Answer]:
-    return await question_service.get_answers_by_user(user_id)
+    try:
+        return await question_service.delete_question(question_id)
+    except Exception as e:
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST,detail=str(e))
 
 @router.get("/get_questions_by_users", status_code=status.HTTP_200_OK)
 async def get_questions_by_user(user_id: int)->List[Question]:
-    return await question_service.get_questions_by_user(user_id)
-
-@router.get("/get_question_users_answers", status_code=status.HTTP_201_CREATED)
-async def get_question_users_answers(user_id: int)->List:
-    return await question_service.get_question_users_answers(user_id)
+    try:
+        return await question_service.get_questions_by_user(user_id)
+    except Exception as e:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND,detail=str(e))
 
 @router.get("/get_question_users_count", status_code=status.HTTP_200_OK)
 async def get_question_users_count(user_id: int)->int:
-    return await question_service.get_question_users_count(user_id)
+    try:
+        return await question_service.get_question_users_count(user_id)
+    except Exception as e:
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST,detail=str(e))
 
-@router.get("/get_users_answers", status_code=status.HTTP_200_OK)
-async def get_users_answers(user_id: int)->List[Answer]:
-    return await question_service.get_users_answers(user_id)
-
-@router.get("/get_users_answers_count", status_code=status.HTTP_200_OK)
-async def get_users_answers_count(user_id: int)->int:
-    return await question_service.get_users_answers_count(user_id)
-
-@router.get("/get_all_questions_answers", status_code=status.HTTP_200_OK)
-async def get_all_questions_answers(user_id: int)->List:
-    return await question_service.get_all_questions_answers()
-
-@router.get("/check_user_answered/{user_id}/{question_id}", status_code=status.HTTP_200_OK)
-async def check_user_answered(user_id:int, question_id:int)->bool:
-    return await question_service.check_user_answered(user_id,question_id)
