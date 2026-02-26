@@ -16,7 +16,7 @@ CREATE TABLE poll_answers(
     id INT NOT NULL AUTO_INCREMENT,
     user_id INT NOT NULL,
     question_id INT NOT NULL,
-    answer_id INT NOT NULL,
+    answer_id INT DEFAULT 0,
     PRIMARY KEY (id),
     FOREIGN KEY (question_id) REFERENCES poll_questions(id) ON DELETE CASCADE
 );

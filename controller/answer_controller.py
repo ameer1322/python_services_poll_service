@@ -25,7 +25,7 @@ async def update_answer(question_id: int, answer_id: int, user_id:int)->Optional
     except Exception as e:
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST,detail=str(e))
 
-@router.delete("/delete_user_answers", status_code=status.HTTP_200_OK)
+@router.delete("/delete_user_answers/{user_id}", status_code=status.HTTP_200_OK)
 async def delete_user_answers(user_id: int)->Optional[int]:
     try:
         return await answer_service.delete_answers_by_user(user_id)
