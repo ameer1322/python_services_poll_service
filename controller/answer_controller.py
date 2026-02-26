@@ -32,35 +32,35 @@ async def delete_user_answers(user_id: int)->Optional[int]:
     except Exception as e:
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST,detail=str(e))
 
-@router.get("/get_answers_by_user", status_code=status.HTTP_200_OK)
+@router.get("/get_answers_by_user/{user_id}", status_code=status.HTTP_200_OK)
 async def get_answers_by_user(user_id: int)->List[Answer]:
     try:
         return await answer_service.get_answers_by_user(user_id)
     except Exception as e:
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST,detail=str(e))
 
-@router.get("/get_question_users_answers", status_code=status.HTTP_201_CREATED)
+@router.get("/get_question_users_answers/{user_id}", status_code=status.HTTP_201_CREATED)
 async def get_question_users_answers(user_id: int)->List:
     try:
         return await answer_service.get_question_users_answers(user_id)
     except Exception as e:
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST,detail=str(e))
 
-@router.get("/get_users_answers", status_code=status.HTTP_200_OK)
+@router.get("/get_users_answers/{user_id}", status_code=status.HTTP_200_OK)
 async def get_users_answers(user_id: int)->List[Answer]:
     try:
         return await answer_service.get_users_answers(user_id)
     except Exception as e:
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST,detail=str(e))
 
-@router.get("/get_users_answers_count", status_code=status.HTTP_200_OK)
+@router.get("/get_users_answers_count/{user_id}", status_code=status.HTTP_200_OK)
 async def get_users_answers_count(user_id: int)->int:
     try:
         return await answer_service.get_users_answers_count(user_id)
     except Exception as e:
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST,detail=str(e))
 
-@router.get("/get_all_questions_answers", status_code=status.HTTP_200_OK)
+@router.get("/get_all_questions_answers/{user_id}", status_code=status.HTTP_200_OK)
 async def get_all_questions_answers(user_id: int)->List:
     try:
         return await answer_service.get_all_questions_answers()
