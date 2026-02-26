@@ -1,11 +1,13 @@
 from fastapi import FastAPI
 
 from controller.question_controller import router as question_router
+from controller.answer_controller import router as answer_router
 
 from repository.database import database
 
 app = FastAPI()
 app.include_router(question_router)
+app.include_router(answer_router)
 
 @app.on_event("startup")
 async def startup():
