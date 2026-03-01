@@ -1,5 +1,6 @@
-DROP TABLE IF EXISTS poll_question;
 DROP TABLE IF EXISTS poll_answers;
+DROP TABLE IF EXISTS poll_questions;
+
 
 
 CREATE TABLE poll_questions(

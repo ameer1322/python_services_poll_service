@@ -1,9 +1,13 @@
 from typing import List,Optional
 
+import traceback
+
 from fastapi import APIRouter, HTTPException
 from starlette import status
 
+
 from model.answer_model import Answer
+from model.answer_request_model import AnswerRequest
 from service import answer_service
 
 router = APIRouter(
@@ -12,10 +16,11 @@ router = APIRouter(
 )
 
 @router.post("/answer_question", status_code=status.HTTP_201_CREATED)
-async def answer_question(question_id: int, answer_id: int, user_id:int)->Optional[int]:
+async def answer_question(request : AnswerRequest)->Optional[int]:
     try:
-        return await answer_service.answer_question(question_id, answer_id, user_id)
+        return await answer_service.answer_question(request.question_id, request.answer_id, request.user_id)
     except Exception as e:
+        traceback.print_exc()
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST,detail=str(e))
 
 @router.put("/update_answer", status_code=status.HTTP_200_OK)
@@ -72,5 +77,6 @@ async def check_user_answered(user_id:int, question_id:int)->bool:
     try:
         return await answer_service.check_user_answered(user_id,question_id)
     except Exception as e:
+        traceback.print_exc()
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST,detail=str(e))
 

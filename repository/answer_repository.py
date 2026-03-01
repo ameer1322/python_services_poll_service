@@ -106,6 +106,7 @@ async def get_all_questions_answers() -> List:
     return await database.fetch_all(query)
 
 async def check_user_answered(user_id:int, question_id: int)->bool:
+
     query = """
     SELECT * FROM poll_answers 
     WHERE user_id = :user_id AND question_id = :question_id
@@ -114,7 +115,11 @@ async def check_user_answered(user_id:int, question_id: int)->bool:
         "user_id":user_id,
         "question_id": question_id
     }
-    check = await database.fetch_one(query,values= values)
-    if check:
-        return True
-    return False
+    try:
+        check = await database.fetch_one(query,values= values)
+        if check:
+            return True
+        return False
+    except Exception as e:
+        print(f"ERROR:{e}")
+        raise
