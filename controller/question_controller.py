@@ -26,14 +26,14 @@ async def create_question(question: Question)->int:
     except Exception as e:
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST,detail=str(e))
 
-@router.get("/get_question_by_id/{question_id}", status_code=status.HTTP_200_OK)
+@router.get("/{question_id}", status_code=status.HTTP_200_OK)
 async def get_question_by_id(question_id: int)->Optional[Question]:
     try:
         return await question_service.get_question_by_id(question_id)
     except Exception as e:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND,detail=str(e))
 
-@router.delete("/delete_question/{question_id}", status_code=status.HTTP_200_OK)
+@router.delete("/{question_id}", status_code=status.HTTP_200_OK)
 async def delete_question(question_id: int)->Optional[Question]:
     try:
         return await question_service.delete_question(question_id)

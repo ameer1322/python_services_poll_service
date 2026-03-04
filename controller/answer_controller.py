@@ -15,7 +15,7 @@ router = APIRouter(
     tags=["answer"],
 )
 
-@router.post("/answer_question", status_code=status.HTTP_201_CREATED)
+@router.post("/", status_code=status.HTTP_201_CREATED)
 async def answer_question(request : AnswerRequest)->Optional[int]:
     try:
         response = await answer_service.answer_question(request.question_id, request.answer_id, request.user_id)
@@ -24,7 +24,7 @@ async def answer_question(request : AnswerRequest)->Optional[int]:
     except Exception as e:
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST,detail=str(e))
 
-@router.put("/update_answer", status_code=status.HTTP_200_OK)
+@router.put("/", status_code=status.HTTP_200_OK)
 async def update_answer(request: AnswerRequest)->Optional[int]:
     try:
         return await answer_service.update_answer(request.question_id, request.answer_id, request.user_id)
@@ -75,7 +75,7 @@ async def get_users_answers_count(user_id: int)->int:
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST,detail=str(e))
 
 @router.get("/get_all_questions_answers", status_code=status.HTTP_200_OK)
-async def get_all_questions_answers()->List[dict]:
+async def get_all_questions_answers()->Optional[List[dict]]:
     try:
         return await answer_service.get_all_questions_answers()
     except Exception as e:

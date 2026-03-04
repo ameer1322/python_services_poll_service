@@ -9,8 +9,6 @@ from model.answer_model import Answer
 
 
 async def answer_question (question_id: int, answer_id: int, user_id: int) -> Optional[int]:
-    if answer_id > 4 or answer_id < 0:
-        raise ValueError('answer_id must be between 1 and 4')
     query = """
     INSERT into poll_answers (question_id, answer_id, user_id)
     VALUES (:question_id, :answer_id, :user_id)
@@ -26,8 +24,6 @@ async def answer_question (question_id: int, answer_id: int, user_id: int) -> Op
     return last_record_id[0]
 
 async def update_answer (question_id: int, answer_id: int, user_id: int) -> Optional[int]:
-    if answer_id > 4 or answer_id < 0:
-        raise ValueError('answer_id must be between 1 and 4')
     query = """
     UPDATE poll_answers 
     SET answer_id = :answer_id
@@ -109,7 +105,7 @@ async def get_users_answers_count(user_id: int) -> int:
     }
     return await database.fetch_one(query, values)
 
-async def get_all_questions_answers() -> List:
+async def get_all_questions_answers() -> Optional[List[dict]]:
     query = """
     SELECT poll_questions.id, poll_questions.question, poll_questions.answer_a, poll_questions.answer_b, poll_questions.answer_c, poll_questions.answer_d, poll_answers.answer_id, COUNT(*) as count
     FROM poll_questions 

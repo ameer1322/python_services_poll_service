@@ -37,7 +37,7 @@ async def get_users_answers(user_id: int)->List[Answer]:
 async def get_users_answers_count(user_id: int)->int:
     return await answer_repository.get_users_answers_count(user_id)
 
-async def get_all_questions_answers()->List:
+async def get_all_questions_answers()->Optional[List[dict]]:
     return await answer_repository.get_all_questions_answers()
 
 async def check_user_answered(user_id: int, question_id:int)->bool:
