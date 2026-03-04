@@ -10,4 +10,4 @@ async def check_user_registered(user_id: int):
             f"{USER_SERVICE_URL}/user/is_registered/{user_id}"
         )
         response.raise_for_status()
-        return response.json()
+    return response.json()

@@ -22,6 +22,9 @@ async def update_answer(question_id: int, answer_id : int, user_id: int)->Option
 async def delete_answers_by_user(user_id: int)->Optional[int]:
     return await answer_repository.delete_answers_by_user(user_id)
 
+async def delete_answer(user_id: int, question_id: int):
+    return await answer_repository.delete_answer(user_id,question_id)
+
 async def get_answers_by_user(user_id: int)->List[Answer]:
     return await answer_repository.get_answers_by_user(user_id)
 

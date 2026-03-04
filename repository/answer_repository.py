@@ -4,6 +4,7 @@ from typing import Optional, List
 import json
 from repository.database import database
 from model.question_model import Question
+from model.question_answer_count_model import QuestionAnswerCount
 from model.answer_model import Answer
 
 
@@ -22,7 +23,6 @@ async def answer_question (question_id: int, answer_id: int, user_id: int) -> Op
     async with database.transaction():
         await database.execute(query, values)
         last_record_id = await database.fetch_one("SELECT LAST_INSERT_ID()")
-
     return last_record_id[0]
 
 async def update_answer (question_id: int, answer_id: int, user_id: int) -> Optional[int]:
@@ -54,9 +54,22 @@ async def delete_answers_by_user (user_id: int) -> Optional[List[Answer]]:
     }
     async with database.transaction():
         deleted_answers = await database.fetch_all("SELECT * FROM poll_answers WHERE user_id = :user_id", values)
-        await database.execute(query, values)
+        await database.execute(query, values=values)
     return deleted_answers
 
+async def delete_answer(user_id, question_id):
+    query = """
+    DELETE FROM poll_answers 
+    WHERE user_id = :user_id AND question_id = :question_id
+    """
+    values = {
+        "user_id" : user_id,
+        "question_id":question_id
+    }
+    async with database.transaction():
+        deleted_answer = await database.fetch_one("SELECT * FROM poll_answers WHERE user_id = :user_id AND question_id = :question_id", values=values)
+        await database.execute(query, values=values)
+    return deleted_answer[0]
 
 async def get_answers_by_user (user_id: int) -> List[Answer]:
     query = """
@@ -68,7 +81,7 @@ async def get_answers_by_user (user_id: int) -> List[Answer]:
     return await database.fetch_all(query, values=values)
 
 
-async def get_question_users_answers(question_id: int) -> List:
+async def get_question_users_answers(question_id: int) -> List[QuestionAnswerCount]:
     question = await get_question_by_id(question_id)
     values = {"question_id": question_id}
     answer_a = await database.fetch_one("SELECT COUNT(answer_id) FROM poll_answers WHERE question_id = :question_id AND answer_id = 1", values)
@@ -103,7 +116,10 @@ async def get_all_questions_answers() -> List:
     JOIN poll_answers ON poll_questions.id = poll_answers.question_id
     GROUP BY poll_questions.id, poll_answers.answer_id
     """
-    return await database.fetch_all(query)
+    result = await database.fetch_all(query)
+    if result:
+        return [dict(row) for row in result]
+    return None
 
 async def check_user_answered(user_id:int, question_id: int)->bool:
 
