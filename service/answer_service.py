@@ -4,6 +4,7 @@ from model.answer_model import Answer
 from model.question_model import Question
 
 from repository import answer_repository
+from service import question_service
 
 from clients import user_client
 
@@ -11,15 +12,15 @@ async def answer_question(question_id: int, answer_id: int, user_id: int)->Optio
     is_registered = await user_client.check_user_registered(user_id)
     if is_registered:
         return await answer_repository.answer_question(question_id, answer_id, user_id)
-    return "User needs to be registered"
+    raise ValueError ("User needs to be registered")
 
 async def update_answer(question_id: int, answer_id : int, user_id: int)->Optional[int]:
     is_registered = await user_client.check_user_registered(user_id)
     if is_registered:
         return await answer_repository.update_answer(question_id, answer_id, user_id)
-    return "User needs to be registered"
+    raise ValueError ("User needs to be registered")
 
-async def delete_answers_by_user(user_id: int)->Optional[int]:
+async def delete_answers_by_user(user_id: int)->List:
     return await answer_repository.delete_answers_by_user(user_id)
 
 async def delete_answer(user_id: int, question_id: int):
@@ -41,5 +42,7 @@ async def get_all_questions_answers()->Optional[List[dict]]:
     return await answer_repository.get_all_questions_answers()
 
 async def check_user_answered(user_id: int, question_id:int)->bool:
-
-    return await answer_repository.check_user_answered(user_id, question_id)
+    question = await question_service.get_question_by_id(question_id)
+    if question:
+        return await answer_repository.check_user_answered(user_id, question_id)
+    raise ValueError ("Question doesn't exist")
