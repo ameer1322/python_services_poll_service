@@ -46,3 +46,9 @@ async def check_user_answered(user_id: int, question_id:int)->bool:
     if question:
         return await answer_repository.check_user_answered(user_id, question_id)
     raise ValueError ("Question doesn't exist")
+
+async def get_question_answered_count(question_id: int)->int:
+    return await answer_repository.get_question_answered_count(question_id)
+
+async def get_questions_answers_count(question_id: int)->int:
+    return await answer_repository.get_questions_answers_count(question_id)

@@ -135,3 +135,22 @@ async def check_user_answered(user_id:int, question_id: int)->bool:
     except Exception as e:
         print(f"ERROR:{e}")
         raise
+
+async def get_question_answered_count(question_id: int) -> int:
+    query = """
+    SELECT COUNT(answer_id) FROM poll_answers WHERE question_id = :question_id
+    """
+    values = {
+        'question_id': question_id
+    }
+    return await database.fetch_one(query, values)
+
+async def get_questions_answers_count(question_id: int) -> int:
+    query = """
+    SELECT COUNT(answer_id) FROM poll_answers WHERE question_id = :question_id
+    """
+    values = {
+        'question_id': question_id
+    }
+    return await database.fetch_one(query, values)
+

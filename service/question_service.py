@@ -31,8 +31,7 @@ async def get_questions_by_user(user_id: int)->List[Question]:
 
 
 
-async def get_question_users_count(question_id: int)->int:
-    return await question_repository.get_question_users_count(question_id)
+
 
 async def get_questions()-> Optional[List[Question]]:
     return await question_repository.get_questions()

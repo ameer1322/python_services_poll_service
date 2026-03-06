@@ -51,10 +51,10 @@ async def get_answers_by_user(user_id: int)->List[Answer]:
     except Exception as e:
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST,detail=str(e))
 
-@router.get("/get_question_users_answers/{user_id}", status_code=status.HTTP_201_CREATED)
-async def get_question_users_answers(user_id: int)->List:
+@router.get("/get_users_answers/{user_id}", status_code=status.HTTP_201_CREATED)
+async def get_users_answers(user_id: int)->List:
     try:
-        return await answer_service.get_question_users_answers(user_id)
+        return await answer_service.get_users_answers(user_id)
     except Exception as e:
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST,detail=str(e))
 
@@ -65,7 +65,8 @@ async def get_users_answers(user_id: int)->List[Answer]:
     except Exception as e:
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST,detail=str(e))
 
-@router.get("/get_users_answers_count/{user_id}", status_code=status.HTTP_200_OK)
+##get how many questions this user answered
+@router.get("/get_user_answers_count/{user_id}", status_code=status.HTTP_200_OK)
 async def get_users_answers_count(user_id: int)->int:
     try:
         return await answer_service.get_users_answers_count(user_id)
@@ -86,3 +87,17 @@ async def check_user_answered(user_id:int, question_id:int)->bool:
     except Exception as e:
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST,detail=str(e))
 
+@router.get("/get_question_answered_count/{user_id}", status_code=status.HTTP_200_OK)
+async def get_question_answered_count(question_id: int)->int:
+    try:
+        return await answer_service.get_question_answered_count(question_id)
+    except Exception as e:
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST,detail=str(e))
+
+##return how many users choose each of the question options
+@router.get("questions_answers_count", status_code=status.HTTP_200_OK)
+async def get_questions_answers_count(question_id: int)->int:
+    try:
+        return await answer_service.get_questions_answers_count(question_id)
+    except Exception as e:
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST,detail=str(e))

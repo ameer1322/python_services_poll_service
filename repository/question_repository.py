@@ -66,14 +66,7 @@ async def get_questions_by_user (user_id: int) -> List:
     }
     return await database.fetch_all(query, values=values)
 
-async def get_question_users_count(question_id: int) -> int:
-    query = """
-    SELECT COUNT(answer_id) FROM poll_answers WHERE question_id = :question_id
-    """
-    values = {
-        'question_id': question_id
-    }
-    return await database.fetch_one(query, values)
+
 
 
 
