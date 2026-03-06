@@ -32,8 +32,8 @@ async def get_answers_by_user(user_id: int)->List[Answer]:
 async def get_question_users_answers(question_id: int)->List:
     return await answer_repository.get_question_users_answers(question_id)
 
-async def get_users_answers(user_id: int)->List[Answer]:
-    return await answer_repository.get_users_answers(user_id)
+async def get_user_answers(user_id: int)->List[Answer]:
+    return await answer_repository.get_user_answers(user_id)
 
 async def get_users_answers_count(user_id: int)->int:
     return await answer_repository.get_users_answers_count(user_id)
@@ -50,5 +50,5 @@ async def check_user_answered(user_id: int, question_id:int)->bool:
 async def get_question_answered_count(question_id: int)->int:
     return await answer_repository.get_question_answered_count(question_id)
 
-async def get_questions_answers_count(question_id: int)->int:
+async def get_questions_answers_count(question_id: int)->List[dict]:
     return await answer_repository.get_questions_answers_count(question_id)

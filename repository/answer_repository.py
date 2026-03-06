@@ -1,5 +1,5 @@
 
-from typing import Optional, List
+from typing import Optional, List, Dict
 
 import json
 from repository.database import database
@@ -87,7 +87,7 @@ async def get_question_users_answers(question_id: int) -> List[QuestionAnswerCou
     return [question, answer_a[0], answer_b[0], answer_c[0], answer_d[0]]
 
 
-async def get_users_answers(user_id: int) -> List:
+async def get_user_answers(user_id: int) -> List:
     query = """
     SELECT * FROM poll_answers WHERE user_id = :user_id
     """
@@ -138,19 +138,25 @@ async def check_user_answered(user_id:int, question_id: int)->bool:
 
 async def get_question_answered_count(question_id: int) -> int:
     query = """
-    SELECT COUNT(answer_id) FROM poll_answers WHERE question_id = :question_id
+    SELECT COUNT(*) as count 
+    FROM poll_answers 
+    WHERE question_id = :question_id
     """
     values = {
         'question_id': question_id
     }
-    return await database.fetch_one(query, values)
+    result = await database.fetch_one(query, values)
+    return result["count"]
 
-async def get_questions_answers_count(question_id: int) -> int:
+async def get_questions_answers_count(question_id: int) -> List[Dict]:
     query = """
-    SELECT COUNT(answer_id) FROM poll_answers WHERE question_id = :question_id
+    SELECT answer_id, COUNT(*) AS count
+    FROM poll_answers 
+    WHERE question_id = :question_id
+    GROUP BY answer_id
     """
     values = {
         'question_id': question_id
     }
-    return await database.fetch_one(query, values)
+    return await database.fetch_all(query, values)
 
