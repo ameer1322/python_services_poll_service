@@ -1,4 +1,4 @@
-from typing import Optional, List
+from typing import Optional, List, Dict
 
 from model.answer_model import Answer
 from model.question_model import Question
@@ -10,17 +10,40 @@ from clients import user_client
 
 async def answer_question(question_id: int, answer_id: int, user_id: int)->Optional[int]:
     is_registered = await user_client.check_user_registered(user_id)
+    user = await user_client.get_user(user_id)
+    if user["status_code"] == 404:
+        raise ValueError ("User doesn't exist")
     if is_registered:
-        return await answer_repository.answer_question(question_id, answer_id, user_id)
+        question = await question_service.get_question_by_id(question_id)
+        if question:
+            if 5 > answer_id > 0:
+                user_answered_check = await check_user_answered(user_id, question_id)
+                if user_answered_check:
+                    raise ValueError("User already answered")
+                return await answer_repository.answer_question(question_id, answer_id, user_id)
+            raise ValueError ("Answer needs to be between 1 and 4")
+        raise ValueError ("Question doesn't exist")
     raise ValueError ("User needs to be registered")
+
 
 async def update_answer(question_id: int, answer_id : int, user_id: int)->Optional[int]:
     is_registered = await user_client.check_user_registered(user_id)
+    user = await user_client.get_user(user_id)
+    if user["status_code"] == 404:
+        raise ValueError("User doesn't exist")
     if is_registered:
-        return await answer_repository.update_answer(question_id, answer_id, user_id)
+        question = await question_service.get_question_by_id(question_id)
+        if question:
+            if 5 > answer_id > 0:
+                user_answered_check = await check_user_answered(user_id, question_id)
+                if user_answered_check:
+                    return await answer_repository.update_answer(question_id, answer_id, user_id)
+                raise ValueError("User hasn't answered this question yet")
+            raise ValueError ("Answer needs to be between 1 and 4")
+        raise ValueError ("Question doesn't exist")
     raise ValueError ("User needs to be registered")
 
-async def delete_answers_by_user(user_id: int)->List:
+async def delete_answers_by_user(user_id: int)->Optional[List[Dict]]:
     return await answer_repository.delete_answers_by_user(user_id)
 
 async def delete_answer(user_id: int, question_id: int):

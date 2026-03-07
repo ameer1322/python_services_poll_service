@@ -41,7 +41,7 @@ async def update_answer (question_id: int, answer_id: int, user_id: int) -> Opti
 
 
 
-async def delete_answers_by_user (user_id: int) -> Optional[List[Answer]]:
+async def delete_answers_by_user (user_id: int) -> Optional[List[Dict]]:
     query = """
     DELETE FROM poll_answers WHERE user_id = :user_id
     """
@@ -51,7 +51,7 @@ async def delete_answers_by_user (user_id: int) -> Optional[List[Answer]]:
     async with database.transaction():
         deleted_answers = await database.fetch_all("SELECT * FROM poll_answers WHERE user_id = :user_id", values)
         await database.execute(query, values=values)
-    return deleted_answers
+    return [dict(row) for row in deleted_answers]
 
 async def delete_answer(user_id, question_id):
     query = """

@@ -31,21 +31,21 @@ async def update_answer(request: AnswerRequest)->Optional[int]:
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST,detail=str(e))
 
 @router.delete("/delete_user_answers/{user_id}", status_code=status.HTTP_200_OK)
-async def delete_user_answers(user_id: int)->List:
+async def delete_user_answers(user_id: int)->Optional[List[Dict]]:
     try:
         return await answer_service.delete_answers_by_user(user_id)
     except Exception as e:
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST,detail=str(e))
 
 @router.delete("/delete_answer/user/{user_id}/question/{question_id}", status_code=status.HTTP_200_OK)
-async def delete_answer(user_id, question_id):
+async def delete_answer(user_id, question_id) -> Optional[List[Dict]]:
     try:
         return await answer_service.delete_answer(user_id,question_id)
     except Exception as e:
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST,detail=str(e))
 
 @router.get("/get_answers_by_user/{user_id}", status_code=status.HTTP_200_OK)
-async def get_answers_by_user(user_id: int)->List[Answer]:
+async def get_answers_by_user(user_id: int)->Optional[List[Answer]]:
     try:
         return await answer_service.get_answers_by_user(user_id)
     except Exception as e:
