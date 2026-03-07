@@ -46,19 +46,20 @@ async def update_answer(question_id: int, answer_id : int, user_id: int)->Option
 async def delete_answers_by_user(user_id: int)->Optional[List[Dict]]:
     return await answer_repository.delete_answers_by_user(user_id)
 
-async def delete_answer(user_id: int, question_id: int):
+async def delete_answer(user_id: int, question_id: int)-> int:
     return await answer_repository.delete_answer(user_id,question_id)
 
-async def get_answers_by_user(user_id: int)->List[Answer]:
-    return await answer_repository.get_answers_by_user(user_id)
-
-async def get_question_users_answers(question_id: int)->List:
-    return await answer_repository.get_question_users_answers(question_id)
 
 async def get_user_answers(user_id: int)->List[Answer]:
+    user = await user_client.get_user(user_id)
+    if user["status_code"] == 404:
+        raise ValueError("User doesn't exist")
     return await answer_repository.get_user_answers(user_id)
 
 async def get_users_answers_count(user_id: int)->int:
+    user = await user_client.get_user(user_id)
+    if user["status_code"]==404:
+        raise ValueError("User doesn't exist")
     return await answer_repository.get_users_answers_count(user_id)
 
 async def get_all_questions_answers()->Optional[List[dict]]:
@@ -66,12 +67,22 @@ async def get_all_questions_answers()->Optional[List[dict]]:
 
 async def check_user_answered(user_id: int, question_id:int)->bool:
     question = await question_service.get_question_by_id(question_id)
+    user = await user_client.get_user(user_id)
+    if user["status_code"]==404:
+        raise ValueError("User doesn't exist")
     if question:
         return await answer_repository.check_user_answered(user_id, question_id)
     raise ValueError ("Question doesn't exist")
 
 async def get_question_answered_count(question_id: int)->int:
-    return await answer_repository.get_question_answered_count(question_id)
+    question = await question_service.get_question_by_id(question_id)
+    if question:
+        return await answer_repository.get_question_answered_count(question_id)
+    raise ValueError("Question doesn't exist")
 
 async def get_questions_answers_count(question_id: int)->List[dict]:
-    return await answer_repository.get_questions_answers_count(question_id)
+    question = await question_service.get_question_by_id(question_id)
+    print (question)
+    if question:
+        return await answer_repository.get_questions_answers_count(question_id)
+    raise ValueError("Question doesn't exist")

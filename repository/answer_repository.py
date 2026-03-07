@@ -53,7 +53,7 @@ async def delete_answers_by_user (user_id: int) -> Optional[List[Dict]]:
         await database.execute(query, values=values)
     return [dict(row) for row in deleted_answers]
 
-async def delete_answer(user_id, question_id):
+async def delete_answer(user_id, question_id)->int:
     query = """
     DELETE FROM poll_answers 
     WHERE user_id = :user_id AND question_id = :question_id
@@ -67,29 +67,9 @@ async def delete_answer(user_id, question_id):
         await database.execute(query, values=values)
     return deleted_answer[0]
 
-async def get_answers_by_user (user_id: int) -> List[Answer]:
-    query = """
-    SELECT * FROM poll_answers WHERE user_id = :user_id
-    """
-    values = {
-        'user_id': user_id
-    }
-    return await database.fetch_all(query, values=values)
-
-
-async def get_question_users_answers(question_id: int) -> List[QuestionAnswerCount]:
-    question = await get_question_by_id(question_id)
-    values = {"question_id": question_id}
-    answer_a = await database.fetch_one("SELECT COUNT(answer_id) FROM poll_answers WHERE question_id = :question_id AND answer_id = 1", values)
-    answer_b = await database.fetch_one("SELECT COUNT(answer_id) FROM poll_answers WHERE question_id = :question_id AND answer_id = 2", values)
-    answer_c = await database.fetch_one("SELECT COUNT(answer_id) FROM poll_answers WHERE question_id = :question_id AND answer_id = 3", values)
-    answer_d = await database.fetch_one("SELECT COUNT(answer_id) FROM poll_answers WHERE question_id = :question_id AND answer_id = 4", values)
-    return [question, answer_a[0], answer_b[0], answer_c[0], answer_d[0]]
-
-
 async def get_user_answers(user_id: int) -> List:
     query = """
-    SELECT * FROM poll_answers WHERE user_id = :user_id
+    SELECT question_id, answer_id FROM poll_answers WHERE user_id = :user_id
     """
     values = {
         'user_id': user_id
@@ -98,12 +78,15 @@ async def get_user_answers(user_id: int) -> List:
 
 async def get_users_answers_count(user_id: int) -> int:
     query = """
-    SELECT COUNT(answer_id) FROM poll_answers WHERE user_id = :user_id
+    SELECT COUNT(*) as count
+    FROM poll_answers 
+    WHERE user_id = :user_id
     """
     values = {
         'user_id': user_id
     }
-    return await database.fetch_one(query, values)
+    result = await database.fetch_one(query, values=values)
+    return result["count"]
 
 async def get_all_questions_answers() -> Optional[List[dict]]:
     query = """
@@ -158,5 +141,5 @@ async def get_questions_answers_count(question_id: int) -> List[Dict]:
     values = {
         'question_id': question_id
     }
-    return await database.fetch_all(query, values)
-
+    result = await database.fetch_all(query, values)
+    return [dict(row) for row in result]

@@ -38,26 +38,20 @@ async def delete_user_answers(user_id: int)->Optional[List[Dict]]:
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST,detail=str(e))
 
 @router.delete("/delete_answer/user/{user_id}/question/{question_id}", status_code=status.HTTP_200_OK)
-async def delete_answer(user_id, question_id) -> Optional[List[Dict]]:
+async def delete_answer(user_id, question_id) -> int:
     try:
         return await answer_service.delete_answer(user_id,question_id)
     except Exception as e:
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST,detail=str(e))
 
-@router.get("/get_answers_by_user/{user_id}", status_code=status.HTTP_200_OK)
-async def get_answers_by_user(user_id: int)->Optional[List[Answer]]:
-    try:
-        return await answer_service.get_answers_by_user(user_id)
-    except Exception as e:
-        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST,detail=str(e))
-
-
+##return what the user answered to each question
 @router.get("/get_user_answers/{user_id}", status_code=status.HTTP_200_OK)
 async def get_user_answers(user_id: int)->List[Answer]:
     try:
         return await answer_service.get_user_answers(user_id)
     except Exception as e:
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST,detail=str(e))
+
 
 ##get how many questions this user answered
 @router.get("/get_user_answers_count/{user_id}", status_code=status.HTTP_200_OK)
@@ -67,6 +61,7 @@ async def get_users_answers_count(user_id: int)->int:
     except Exception as e:
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST,detail=str(e))
 
+##returns all questions answers and how many users choose an answer for that question
 @router.get("/get_all_questions_answers", status_code=status.HTTP_200_OK)
 async def get_all_questions_answers()->Optional[List[dict]]:
     try:
@@ -81,7 +76,8 @@ async def check_user_answered(user_id:int, question_id:int)->bool:
     except Exception as e:
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST,detail=str(e))
 
-@router.get("/get_question_answered_count/{user_id}", status_code=status.HTTP_200_OK)
+##return how many users answered
+@router.get("/get_question_answered_count/{question_id}", status_code=status.HTTP_200_OK)
 async def get_question_answered_count(question_id: int)->int:
     try:
         return await answer_service.get_question_answered_count(question_id)
@@ -89,7 +85,7 @@ async def get_question_answered_count(question_id: int)->int:
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST,detail=str(e))
 
 ##return how many users choose each of the question options
-@router.get("questions_answers_count", status_code=status.HTTP_200_OK)
+@router.get("/questions_answers_count/{question_id}", status_code=status.HTTP_200_OK)
 async def get_questions_answers_count(question_id: int)->List[Dict]:
     try:
         return await answer_service.get_questions_answers_count(question_id)
