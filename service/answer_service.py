@@ -44,9 +44,18 @@ async def update_answer(question_id: int, answer_id : int, user_id: int)->Option
     raise ValueError ("User needs to be registered")
 
 async def delete_answers_by_user(user_id: int)->Optional[List[Dict]]:
+    user = await user_client.get_user(user_id)
+    if user["status_code"] == 404:
+        raise ValueError("User doesn't exist")
     return await answer_repository.delete_answers_by_user(user_id)
 
-async def delete_answer(user_id: int, question_id: int)-> int:
+async def delete_answer(user_id: int, question_id: int)-> Optional[int]:
+    user = await user_client.get_user(user_id)
+    if user["status_code"] == 404:
+        raise ValueError("User doesn't exist")
+    question = await question_service.get_question_by_id(question_id)
+    if not question:
+        raise ValueError("Question doesn't exist")
     return await answer_repository.delete_answer(user_id,question_id)
 
 

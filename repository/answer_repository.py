@@ -53,7 +53,7 @@ async def delete_answers_by_user (user_id: int) -> Optional[List[Dict]]:
         await database.execute(query, values=values)
     return [dict(row) for row in deleted_answers]
 
-async def delete_answer(user_id, question_id)->int:
+async def delete_answer(user_id, question_id)->Optional[int]:
     query = """
     DELETE FROM poll_answers 
     WHERE user_id = :user_id AND question_id = :question_id
@@ -65,7 +65,9 @@ async def delete_answer(user_id, question_id)->int:
     async with database.transaction():
         deleted_answer = await database.fetch_one("SELECT * FROM poll_answers WHERE user_id = :user_id AND question_id = :question_id", values=values)
         await database.execute(query, values=values)
-    return deleted_answer[0]
+    if deleted_answer:
+        return deleted_answer[0]
+    return None
 
 async def get_user_answers(user_id: int) -> List:
     query = """
